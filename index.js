@@ -24,7 +24,9 @@ async function run() {
         console.log("database successfully connected");
         const database = client.db('masterChefDB');
         const servicesCollection = database.collection('services');
-       
+        const usersCollection = database.collection('users');
+        const reviewCollection = database.collection('review');
+        const buyerCollection = database.collection('buyer');
        
 
 
@@ -48,7 +50,37 @@ async function run() {
             res.json(result)
         });
 
-        
+         // GET API for Single Service
+         app.get('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('getting specific service', id);
+            const query = { _id: ObjectId(id) };
+            const service = await servicesCollection.findOne(query);
+            res.json(service);
+        })
+
+
+            // post api for buyer
+       app.post('/buyer',async(req,res)=>{
+            
+        const user =req.body;
+        console.log('hit the post buyer api',user);
+        // res.send('post hitted');
+        const answer = await buyerCollection.insertOne(user);
+        console.log(answer);
+        res.json(answer)
+    });
+
+
+     // GET API for buyer
+     app.get('/buyer', async (req, res) => {
+        const user = buyerCollection.find({});
+        const getUser = await user.toArray();
+        console.log(getUser);
+        res.send(getUser);
+    });
+
+      
 
 
 
